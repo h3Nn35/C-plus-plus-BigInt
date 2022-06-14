@@ -1,6 +1,7 @@
 #include "BigInt.h"
 #include <string.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -70,6 +71,7 @@ ostream &operator<<(ostream & out, const BigInt & other) {
     }
     return out;
 }
+
 istream &operator>>(istream & in, BigInt & other){
     string input;
     in >> input;
@@ -270,4 +272,34 @@ bool operator==(const BigInt &a, const BigInt &b) {
 
 bool operator!=(const BigInt &a, const BigInt &b) {
     return (a.digits != b.digits);
+}
+
+
+// Multiplikation und Division
+BigInt &operator*=(BigInt &a, const BigInt &b) {
+    int n, m, p;
+    n = a.digits.size();
+    m = b.digits.size();
+    string ans(n + m, '0');
+    for(int i = n - 1; i>=0; i--)
+        for(int j = m - 1; j >= 0; j--){
+            p = (a.digits[i] - '0') * (b.digits[j] - '0') + (ans[i + j + 1] - '0');
+            ans[i+j+1] = p % 10 + '0';
+            ans[i+j] += p / 10 ;
+        }
+
+    for(int i = 0; i < m + n; i++)
+        if(ans[i] !='0'){
+            a.digits = ans.substr(i);
+            return a;
+        }
+    a.digits = "0";
+    return a;
+}
+
+BigInt operator*(const BigInt &a, const BigInt &b) {
+    BigInt temp;
+    temp = a;
+    temp*=b;
+    return temp;
 }

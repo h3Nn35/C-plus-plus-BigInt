@@ -56,6 +56,10 @@ class BigInt{
         friend bool operator>=(const BigInt &, const BigInt &);
         friend bool operator==(const BigInt &, const BigInt &);
         friend bool operator!=(const BigInt &, const BigInt &);
+
+        // Multiplikation und Division
+        friend BigInt &operator*=(BigInt &, const BigInt &);
+        friend BigInt operator*(const BigInt &, const BigInt &);
 };
 
 #endif //BIGINT_BIGINT_H
