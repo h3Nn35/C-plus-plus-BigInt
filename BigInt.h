@@ -16,7 +16,7 @@ class BigInt{
         BigInt(unsigned long long);
         BigInt(string &);
         BigInt(char *);
-        BigInt(BigInt &);
+        BigInt(const BigInt &);
 
         // Hilfsfunktionen
         friend bool Null(const BigInt &other);
@@ -60,6 +60,8 @@ class BigInt{
         // Multiplikation und Division
         friend BigInt &operator*=(BigInt &, const BigInt &);
         friend BigInt operator*(const BigInt &, const BigInt &);
+        friend BigInt &operator/=(BigInt &, const BigInt &);
+        friend BigInt operator/(const BigInt &, const BigInt &);
 };
 
 #endif //BIGINT_BIGINT_H

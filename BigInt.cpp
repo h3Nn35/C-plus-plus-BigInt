@@ -2,6 +2,7 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include <cstdint>
 
 using namespace std;
 
@@ -26,14 +27,14 @@ BigInt::BigInt(string &text){
 
 BigInt::BigInt(char * text) {
     digits = "";
-    for (int i = strlen(text) - 1; i >= 0; i--)
+    for (int i = 0; i < strlen(text); i++)
         if (!isdigit(text[i]))
             throw ("ERROR! String enthält nicht nur Zahlen");
         else
             digits.push_back(text[i]);
 }
 
-BigInt::BigInt(BigInt & other) : digits(other.digits) {}
+BigInt::BigInt(const BigInt & other) : digits(other.digits) {}
 
 
 // Hilfsfunktionen
@@ -107,7 +108,7 @@ BigInt &BigInt::operator=(const unsigned long long & zahl) {
 }
 
 BigInt &BigInt::operator=(const int & zahl) {
-    digits = to_string(zahl);
+    digits = to_string(abs(zahl));
     return *this;
 }
 
@@ -251,19 +252,25 @@ BigInt operator-(const BigInt &a, const BigInt &b) {
 
 // Vergleiche
 bool operator<(const BigInt &a, const BigInt &b) {
-    return (a.digits < b.digits);
+    int n = Length(a), m = Length(b);
+    if(n != m)
+        return n < m;
+    while(n--)
+        if(a.digits[n] != b.digits[n])
+            return a.digits[n] < b.digits[n];
+    return false;
 }
 
 bool operator<=(const BigInt &a, const BigInt &b) {
-    return (a.digits <= b.digits);
+    return !(a > b);
 }
 
 bool operator>(const BigInt &a, const BigInt &b) {
-    return (a.digits > b.digits);
+    return b < a;
 }
 
 bool operator>=(const BigInt &a, const BigInt &b) {
-    return (a.digits >= b.digits);
+    return !(a < b);
 }
 
 bool operator==(const BigInt &a, const BigInt &b) {
@@ -301,5 +308,43 @@ BigInt operator*(const BigInt &a, const BigInt &b) {
     BigInt temp;
     temp = a;
     temp*=b;
+    return temp;
+}
+
+BigInt &operator/=(BigInt &a, const BigInt &b) {
+//    BigInt temp;
+//    temp.digits = "";
+//    string zahl1 = a.digits, zahl2 = b.digits;
+//    int laengea = zahl1.length(), laengeb = zahl2.length(), resultat = 0, zifferna, ziffernb = stoi(zahl2);
+//    for (int i = 0; i <= laengea - laengeb; i+=laengeb){
+//        zifferna = stoi(zahl1.substr(i, laengeb));
+//        if (zifferna < ziffernb){
+//            zifferna = stoi(zahl1.substr(i, laengeb + 1));  // Was, wenn a gleich lang wie b ist? (3 : 4 = ?)
+//            i++;
+//        }
+//        resultat = zifferna / ziffernb;
+//        temp.digits = temp.digits + to_string(resultat);
+//    }
+//    a = temp;
+//    return a;
+    BigInt i = 0;
+    while(true){
+        i++;
+        if (i * b == a) {
+            a = i;
+            return a;
+        }
+        if (i * b > a){
+            i--;
+            a = i;
+            return a;
+        }
+    }
+}
+
+BigInt operator/(const BigInt & a, const BigInt & b) {
+    BigInt temp;
+    temp = a;
+    temp /= b;
     return temp;
 }
